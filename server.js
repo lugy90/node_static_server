@@ -17,6 +17,8 @@ let Compress = {
     match: /css|js|html/ig
 };
 
+const PORT = 8000;
+
 let app = http.createServer((request, response) => {
     let pathName = url.parse(request.url).pathname || "",
         realPath = path.join(staticPath, path.normalize(pathName.replace(/\.\./g, ""))); // 请求文件的在磁盘中的真实地址
@@ -98,4 +100,5 @@ function compressHandle(ext, raw, statusCode, reasonPhrase) {
     stream.pipe(response);
 };
 
-app.listen(80, "127.0.0.1");
+app.listen(PORT);
+console.log("Server runing at port: " + PORT + ".");
