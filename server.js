@@ -13,6 +13,10 @@ let Expires = {
     maxAge: 60 * 60 * 24 * 365 // 一年
 };
 
+let Compress = {
+    match: /css|js|html/ig
+};
+
 let app = http.createServer((request, response) => {
     let pathName = url.parse(request.url).pathname || "",
         realPath = path.join(staticPath, path.normalize(pathName.replace(/\.\./g, "")));; // 请求文件的在磁盘中的真实地址
@@ -55,21 +59,36 @@ let app = http.createServer((request, response) => {
                         return;
                     }
                     let raw = fs.createReadStream(realPath);
-                    let acceptEncoding = request.headers['accept-encoding'] || '';
-                    if (acceptEncoding.match(/\bdeflate\b/)) {
-                      response.writeHead(200, { 'Content-Encoding': 'deflate' });
-                      raw.pipe(zlib.createDeflate()).pipe(response);
-                    } else if (acceptEncoding.match(/\bgzip\b/)) {
-                      response.writeHead(200, { 'Content-Encoding': 'gzip' });
-                      raw.pipe(zlib.createGzip()).pipe(response);
-                    } else {
-                      response.writeHead(200, {});
-                      raw.pipe(response);
-                    }
+                    // let acceptEncoding = request.headers['accept-encoding'] || '';
+                    // if (extName.match(Compress.match) && acceptEncoding.match(/\bdeflate\b/)) {
+                    //   response.writeHead(200, { 'Content-Encoding': 'deflate' });
+                    //   raw.pipe(zlib.createDeflate()).pipe(response);
+                    // } else if (extName.match(Compress.match) && acceptEncoding.match(/\bgzip\b/)) {
+                    //   response.writeHead(200, { 'Content-Encoding': 'gzip' });
+                    //   raw.pipe(zlib.createGzip()).pipe(response);
+                    // } else {
+                    //   response.writeHead(200, {});
+                    //   raw.pipe(response);
+                    // }
                 }
             });
         }
     });
 });
+
+function compressHandle(ext, raw, statusCode, reasonPhrase) {
+    var stream = raw;
+    var acceptEncoding = request.headers['accept-encoding'] || "";
+    var matched = ext.match(config.Compress.match);
+    if (matched && acceptEncoding.match(/\bgzip\b/)) {
+        response.setHeader("Content-Encoding", "gzip");
+        stream = raw.pipe(zlib.createGzip());
+    } else if (matched && acceptEncoding.match(/\bdeflate\b/)) {
+        response.setHeader("Content-Encoding", "deflate");
+        stream = raw.pipe(zlib.createDeflate());
+    }
+    response.writeHead(statusCode, reasonPhrase);
+    stream.pipe(response);
+};
 
 app.listen(80, "127.0.0.1");
