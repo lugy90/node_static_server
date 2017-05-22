@@ -96,6 +96,7 @@ function compressHandle(request, response, ext, raw, statusCode, reasonPhrase) {
         stream = raw.pipe(zlib.createDeflate());
     }
     response.writeHead(statusCode, reasonPhrase);
+    console.log('ok');
     stream.pipe(response);
 };
 
