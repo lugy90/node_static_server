@@ -60,9 +60,9 @@ let app = http.createServer((request, response) => {
                         return;
                     }
                     if (request.headers["range"]) {
-                        let range = utils.parseRange(request.headers["range"], stats.size);
+                        let range = utils.parseRange(request.headers["range"], stat.size);
                         if (range) {
-                            response.setHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + stats.size);
+                            response.setHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + stat.size);
                             response.setHeader("Content-Length", (range.end - range.start + 1));
                             let raw = fs.createReadStream(realPath, {
                                 "start": range.start,
