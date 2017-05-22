@@ -58,18 +58,25 @@ let app = http.createServer((request, response) => {
                         response.end();
                         return;
                     }
-                    let raw = fs.createReadStream(realPath);
-                    // let acceptEncoding = request.headers['accept-encoding'] || '';
-                    // if (extName.match(Compress.match) && acceptEncoding.match(/\bdeflate\b/)) {
-                    //   response.writeHead(200, { 'Content-Encoding': 'deflate' });
-                    //   raw.pipe(zlib.createDeflate()).pipe(response);
-                    // } else if (extName.match(Compress.match) && acceptEncoding.match(/\bgzip\b/)) {
-                    //   response.writeHead(200, { 'Content-Encoding': 'gzip' });
-                    //   raw.pipe(zlib.createGzip()).pipe(response);
-                    // } else {
-                    //   response.writeHead(200, {});
-                    //   raw.pipe(response);
-                    // }
+                    if (request.headers["range"]) {
+                        let range = utils.parseRange(request.headers["range"], stats.size);
+                        if (range) {
+                            response.setHeader("Content-Range", "bytes " + range.start + "-" + range.end + "/" + stats.size);
+                            response.setHeader("Content-Length", (range.end - range.start + 1));
+                            let raw = fs.createReadStream(realPath, {
+                                "start": range.start,
+                                "end": range.end
+                            });
+                            compressHandle(extName, raw, 206, "Partial Content");
+                        } else {
+                            response.removeHeader("Content-Length");
+                            response.writeHead(416, "Request Range Not Satisfiable");
+                            response.end();
+                        }
+                    } else {
+                        let raw = fs.createReadStream(realPath);
+                        compressHandle(extName, raw, 200, "Ok");
+                    }
                 }
             });
         }
