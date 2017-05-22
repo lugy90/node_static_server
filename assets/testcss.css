@@ -1,0 +1,61 @@
+body {
+  color: #333;
+  font: 14px tahoma, arial, 'hiragino sans gb', 'microsoft yahei', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* font */
+
+* {
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
+
+/* table */
+
+table {
+    padding: 0px 24px;
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0px;
+    table-layout: fixed;
+    font-family: Roboto, sans-serif;
+    background-color: rgb(255, 255, 255);
+}
+thead {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(224, 224, 224);
+}
+tbody {
+    height: inherit;
+}
+tr {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    border-bottom-color: rgb(224, 224, 224);
+    color: rgb(0, 188, 212);
+    height: 48px;
+}
+td {
+    padding-left: 0px;
+    padding-right: 0px;
+    height: 48px;
+    text-align: center;
+    font-size: 13px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    background-color: inherit;
+}
+th {
+    font-weight: normal;
+    font-size: 12px;
+    padding-left: 0px;
+    padding-right: 0px;
+    height: 56px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: rgb(158, 158, 158);
+    position: relative;
+    background-color: inherit;
+}
