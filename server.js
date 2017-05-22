@@ -19,7 +19,7 @@ let Compress = {
 
 let app = http.createServer((request, response) => {
     let pathName = url.parse(request.url).pathname || "",
-        realPath = path.join(staticPath, path.normalize(pathName.replace(/\.\./g, "")));; // 请求文件的在磁盘中的真实地址
+        realPath = path.join(staticPath, path.normalize(pathName.replace(/\.\./g, ""))); // 请求文件的在磁盘中的真实地址
 
     fs.exists(realPath, (exists) => {
         if(!exists) {
