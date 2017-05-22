@@ -43,7 +43,6 @@ let app = http.createServer((request, response) => {
                     let extName = path.extname(realPath);
                     extName = extName ? extName.slice(1) : "";
                     let contentType = MIME[extName] || "text/plain";
-
                     if (extName.match(Expires.fileMatch)) {
                         let expires = new Date();
                         expires.setTime(expires.getTime() + Expires.maxAge * 1000);
@@ -69,7 +68,7 @@ let app = http.createServer((request, response) => {
                                 "start": range.start,
                                 "end": range.end
                             });
-                            compressHandle(extName, raw, 206, "Partial Content");
+                            compressHandle(request, response, extName, raw, 206, "Partial Content");
                         } else {
                             response.removeHeader("Content-Length");
                             response.writeHead(416, "Request Range Not Satisfiable");
@@ -77,7 +76,7 @@ let app = http.createServer((request, response) => {
                         }
                     } else {
                         let raw = fs.createReadStream(realPath);
-                        compressHandle(extName, raw, 200, "Ok");
+                        compressHandle(request, response, extName, raw, 200, "Ok");
                     }
                 }
             });
@@ -85,10 +84,10 @@ let app = http.createServer((request, response) => {
     });
 });
 
-function compressHandle(ext, raw, statusCode, reasonPhrase) {
+function compressHandle(request, response, ext, raw, statusCode, reasonPhrase) {
     var stream = raw;
     var acceptEncoding = request.headers['accept-encoding'] || "";
-    var matched = ext.match(config.Compress.match);
+    var matched = ext.match(Compress.match);
     if (matched && acceptEncoding.match(/\bgzip\b/)) {
         response.setHeader("Content-Encoding", "gzip");
         stream = raw.pipe(zlib.createGzip());
@@ -100,5 +99,5 @@ function compressHandle(ext, raw, statusCode, reasonPhrase) {
     stream.pipe(response);
 };
 
-app.listen(PORT);
+app.listen(PORT, '127.0.0.1');
 console.log("Server runing at port: " + PORT + ".");
