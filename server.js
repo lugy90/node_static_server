@@ -3,9 +3,10 @@ let http = require("http"),
     path = require("path"),
     fs = require("fs"),
     MIME = require("./MIME.js").type,
+    utils = require("./utils"),
     zlib = require("zlib");
 
-let staticPath = "./res/";
+let staticPath = "./assets/";
 
 let Expires = {
     fileMatch: /^(gif|png|jpg|js|css)$/ig,
